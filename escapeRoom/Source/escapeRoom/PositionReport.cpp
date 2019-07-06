@@ -2,6 +2,7 @@
 
 
 #include "PositionReport.h"
+#include "GameFramework/Actor.h"
 
 // Sets default values for this component's properties
 UPositionReport::UPositionReport()
@@ -19,8 +20,19 @@ void UPositionReport::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	FString ObjectName = GetOwner()->GetName();
+
+	//FVector ObjectLocation = GetOwner()->GetActorLocation();
+	FVector ObjectLocation2= GetOwner()->GetTransform().GetLocation();
+
+	//FString ObjectPos = ObjectLocation.ToCompactString();
+	FString ObjectPos = ObjectLocation2.ToCompactString();
+
+
 	
+	UE_LOG(LogTemp, Warning, TEXT("%s ist at %s"), *ObjectName, *ObjectPos);//Overloaded Operator, returns TChar[]* of FString
+		
+	//GetOwner()->SetActorLocation(ObjectLocation + FVector(0, 0, 100)); hard-coded movement of objects
 }
 
 
@@ -28,7 +40,8 @@ void UPositionReport::BeginPlay()
 void UPositionReport::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
+	
+	//GetOwner()->SetActorLocation(GetOwner()->GetActorLocation() + FVector(0, 0, 1)); That was fun :D
 	// ...
 }
 
