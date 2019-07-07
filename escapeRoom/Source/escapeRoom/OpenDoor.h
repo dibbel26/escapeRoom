@@ -21,6 +21,8 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	
+
 	void OpenDoor();
 	void CloseDoor();
 
@@ -28,6 +30,8 @@ public:
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	bool IsDoorOpen() const;
+	FRotator GetRotatorOnBegin() const;
 private:
 	UPROPERTY(VisibleAnywhere)
 	bool DoorOpen = false;
@@ -37,6 +41,12 @@ private:
 
 	UPROPERTY(EditAnywhere)
 	ATriggerVolume* PressurePlate;
+
+	UPROPERTY(EditAnywhere)
+	float DoorCloseDelay = 1.f;
+
+	float LastDoorOpenTime;
+	FRotator RotatorOnBegin;
 
 	AActor* ActorThatOpens;	//remember Pawn inherits from Actor
 		

@@ -17,6 +17,8 @@ UOpenDoor::UOpenDoor()
 	// ...
 }
 
+bool UOpenDoor::IsDoorOpen() const { return DoorOpen; }
+FRotator UOpenDoor::GetRotatorOnBegin() const { return RotatorOnBegin; };
 
 // Called when the game starts
 void UOpenDoor::BeginPlay()
@@ -24,26 +26,23 @@ void UOpenDoor::BeginPlay()
 	Super::BeginPlay();
 
 	ActorThatOpens = GetWorld()->GetFirstPlayerController()->GetPawn();
+	RotatorOnBegin = GetOwner()->GetActorRotation();
 }
+
 
 void UOpenDoor::OpenDoor()
 {
-	//get current rotator, modify, set
-	FRotator CurrentRotator = GetOwner()->GetActorRotation();
+	// get RotatorOnBegin, modify, set
 
-	CurrentRotator.Add(0.f, OpenAngle, 0.f);
-
-	GetOwner()->SetActorRotation(CurrentRotator);
-	
+	GetOwner()->SetActorRotation(GetRotatorOnBegin().Add(0.f, OpenAngle, 0.f));
+	DoorOpen = true;
 }
 
 void UOpenDoor::CloseDoor()
 {
-	FRotator CurrentRotator = GetOwner()->GetActorRotation();
-
-	CurrentRotator.Add(0.f, -OpenAngle, 0.f);
-
-	GetOwner()->SetActorRotation(CurrentRotator);
+	// reset FRotator
+	GetOwner()->SetActorRotation(GetRotatorOnBegin());
+	DoorOpen = false;
 }
 
 
@@ -53,14 +52,12 @@ void UOpenDoor::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompon
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
 	// Poll the Trigger Volume
-	if ((!DoorOpen) && (PressurePlate->IsOverlappingActor(ActorThatOpens))) {
+	// if door is open, the PressuraPlate is deactivated and the DoorCloseDelay has passed close the door.
+	if (PressurePlate->IsOverlappingActor(ActorThatOpens)) {
 		OpenDoor();
-		DoorOpen = true;
-	}
-	else if (DoorOpen && !(PressurePlate->IsOverlappingActor(ActorThatOpens))) {
+		LastDoorOpenTime = GetWorld()->GetTimeSeconds();
+	}else if (GetWorld()->GetTimeSeconds() - LastDoorOpenTime > DoorCloseDelay) {
 		CloseDoor();
-		DoorOpen = false;
 	}
-	// If the ActorThatOpens is in the volume
-}
 
+}
