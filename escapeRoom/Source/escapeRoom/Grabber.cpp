@@ -40,6 +40,7 @@ void UGrabber::BeginPlay()
 		UE_LOG(LogTemp, Warning, TEXT("%s has an Input Component"), *(GetOwner()->GetName()))
 			// Bind the input axis
 			InputComponent->BindAction("Grab", IE_Pressed, this, &UGrabber::Grab);
+			InputComponent->BindAction("Grab", IE_Released, this, &UGrabber::Release);
 	} else {
 		UE_LOG(LogTemp, Error, TEXT("%s misses an Input Component"), *(GetOwner()->GetName()));
 	}
@@ -49,6 +50,11 @@ void UGrabber::Grab()
 {
 	UE_LOG(LogTemp, Warning, TEXT("Grab Pressed"))
 	
+}
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Warning, TEXT("Grab Released"))
 }
 
 // Called every frame
@@ -71,7 +77,7 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		GetWorld(),
 		PlayerViewPoint,
 		LineTraceEnd,
-		FColor::FromHex("#ff0000"),
+		FColor::FromHex("#00ff00"),
 		false,
 		0.f,
 		0.f,
