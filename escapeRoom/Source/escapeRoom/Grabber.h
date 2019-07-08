@@ -28,8 +28,6 @@ public:
 
 
 private:
-	FVector PlayerViewPoint;
-	FRotator PlayerViewPointRotation;
 
 	UPROPERTY(EditAnywhere)
 	float Reach = 100.f;
@@ -37,7 +35,16 @@ private:
 	UPhysicsHandleComponent* PhysicsHandle = nullptr;
 	UInputComponent* InputComponent = nullptr;
 
-	//Ray-cast and grab whats in reach
+	///Ray-cast and grab whats in reach
 	void Grab();
 	void Release();
+
+	//Look for (attached) Physics Handle and Input Component
+	void FindPhysicsHandleComponent();
+
+	//setup (attached) Input Component
+	void SetupInputComponent();
+
+	//return hit for first physics body in reach
+	FHitResult GetFirstPhysicsBodyInReach() const;
 };
